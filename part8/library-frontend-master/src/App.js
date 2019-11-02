@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import Recommended from './components/Recommended'
 import LoginForm from './components/LoginForm'
 
 import { useLoginStateValue } from './store'
@@ -21,8 +22,8 @@ const ALL_AUTHORS = gql`
 `
 
 const ALL_BOOKS = gql`
-{
-  allBooks {
+query allBooks($genre: String) {
+  allBooks(genre: $genre) {
     id
     title
     author {
@@ -30,12 +31,13 @@ const ALL_BOOKS = gql`
       name
     }
     published
+    genres
   }
 }
 `
 
 const ADD_BOOK = gql`
-mutation createBook($title: String!, $published: Int!, $author: String!, $genres: [String!]!) {
+mutation addBook($title: String!, $published: Int!, $author: String!, $genres: [String!]!) {
   addBook(
     title: $title,
     published: $published,
@@ -48,6 +50,8 @@ mutation createBook($title: String!, $published: Int!, $author: String!, $genres
     author {
       id
       name
+      born
+      bookCount
     }
   }
 }
@@ -73,6 +77,15 @@ const LOGIN = gql`
       value
     }
   }
+`
+
+const ME = gql`
+{
+  me {
+    username
+    favoriteGenre
+  }
+}
 `
 
 const App = () => {
@@ -101,9 +114,9 @@ const App = () => {
 
   const logout = () => {
     dispatch({ type: 'logout' })
-    setPage('authors')
     localStorage.clear()
     client.resetStore()
+    setPage('authors')
   }
 
   return (
@@ -115,6 +128,7 @@ const App = () => {
           <button onClick={() => setPage('login')}>login</button>
           : <>
             <button onClick={() => setPage('add')}>add book</button>
+            <button onClick={() => setPage('recommended')}>recommended</button>
             <button onClick={logout}>logout</button>
           </>
         }
@@ -129,12 +143,24 @@ const App = () => {
       <Books
         show={page === 'books'}
         books={booksResult}
+        bookQuery={ALL_BOOKS}
       />
 
-      <NewBook
-        show={page === 'add'}
-        addBook={addBook}
-      />
+      {
+        loggedIn && <>
+          <NewBook
+            show={page === 'add'}
+            addBook={addBook}
+          />
+
+          <Recommended
+            show={page === 'recommended'}
+            books={booksResult}
+            userQuery={ME}
+            bookQuery={ALL_BOOKS}
+          />
+        </>
+      }
 
       <LoginForm
         show={page === 'login'}

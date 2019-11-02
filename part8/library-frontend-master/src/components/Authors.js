@@ -42,7 +42,7 @@ const Authors = ({ show, authors, editAuthor }) => {
               books
             </th>
           </tr>
-          {authors.data.allAuthors.map(a =>
+          {authors.data && authors.data.allAuthors.map(a =>
             <tr key={a.name}>
               <td>{a.name}</td>
               <td>{a.born}</td>
@@ -51,7 +51,7 @@ const Authors = ({ show, authors, editAuthor }) => {
           )}
         </tbody>
       </table>
-      {loggedIn && <>
+      {loggedIn && authors.data && authors.data.allAuthors && <>
         <h2>Set birthyear</h2>
         <form onSubmit={submit}>
           <div style={{ width: "200px", padding: "0px 0px 5px 0px" }}>
@@ -72,7 +72,7 @@ const Authors = ({ show, authors, editAuthor }) => {
           <button type="submit">update author</button>
         </form>
       </>}
-    </div>
+    </div >
   )
 }
 

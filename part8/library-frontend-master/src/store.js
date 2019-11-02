@@ -4,7 +4,7 @@ export const LoginStateContext = createContext(false)
 
 const loginReducers = {
   login: (state, { data }) => {
-    localStorage.libraryUserToken = JSON.stringify(data.token)
+    localStorage.setItem('libraryUserToken', data.token)
     return { loggedIn: true, token: data.token }
   },
   logout: () => ({ loggedIn: false, token: null })
@@ -14,7 +14,7 @@ const loginReducer = (state, action) => loginReducers[action.type](state, action
 
 let userData
 try {
-  userData = { token: JSON.parse(window.localStorage.libraryUserToken) }
+  userData = { token: localStorage.getItem('libraryUserToken') }
 } catch (error) {
   userData = {}
 }

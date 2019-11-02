@@ -10,7 +10,10 @@ const User = require('./models/user')
 
 mongoose.set('useFindAndModify', false)
 
-const MONGODB_URI = 'mongodb+srv://peterzon:fullstack@clusterfs-jp-un0hl.mongodb.net/test?retryWrites=true&w=majority'
+const username = process.argv[2]
+const password = process.argv[3]
+
+const MONGODB_URI = `mongodb+srv://${username}:${password}@clusterfs-jp-un0hl.mongodb.net/test?retryWrites=true&w=majority`
 
 console.log('connecting to', MONGODB_URI)
 
@@ -111,7 +114,7 @@ const resolvers = {
           return new UserInputError('Book title must be at least 2 characters', { invalidArgs: args })
         }
       }
-      return newBook.populate('author')
+      return await newBook.populate('author')
     },
     editAuthor: (root, args, context) => {
       if (!context.currentUser) throw new AuthenticationError('Authentication error. Login to edit auhtors.')

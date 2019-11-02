@@ -22,6 +22,8 @@ const LoginForm = ({ login, show, setPage }) => {
         }
       })
       setPage('authors')
+      setUsername('')
+      setPassword('')
     }
   }
 
