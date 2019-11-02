@@ -1,4 +1,4 @@
-const { ApolloServer, UserInputError, gql } = require('apollo-server')
+const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server')
 
 const jwt = require('jsonwebtoken')
 const JWT_SECRET = 'SUPER_SECRET'
@@ -88,7 +88,8 @@ const resolvers = {
   },
 
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      if (!context.currentUser) throw new AuthenticationError('Authentication error. Login to add books.')
       let author = await Author.findOne({ name: args.author })
       if (!author) {
         author = new Author({ name: args.author })
@@ -110,9 +111,10 @@ const resolvers = {
           return new UserInputError('Book title must be at least 2 characters', { invalidArgs: args })
         }
       }
-      return newBook
+      return newBook.populate('author')
     },
-    editAuthor: (root, args) => {
+    editAuthor: (root, args, context) => {
+      if (!context.currentUser) throw new AuthenticationError('Authentication error. Login to edit auhtors.')
       return Author.findOneAndUpdate({ name: args.name }, { born: args.setBornTo })
     },
     createUser: (root, args) => {
