@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import Select from 'react-select'
+import { useLoginStateValue } from '../store'
 
 const Authors = ({ show, authors, editAuthor }) => {
 
   const [author, setAuthor] = useState('')
   const [born, setBorn] = useState('')
+  const [{ loggedIn }] = useLoginStateValue()
 
   const submit = async (e) => {
     e.preventDefault()
@@ -49,25 +51,27 @@ const Authors = ({ show, authors, editAuthor }) => {
           )}
         </tbody>
       </table>
-      <h2>Set birthyear</h2>
-      <form onSubmit={submit}>
-        <div style={{ width: "200px", padding: "0px 0px 5px 0px" }}>
-          <Select
-            value={author}
-            onChange={selectedOption => setAuthor(selectedOption)}
-            options={authors.data.allAuthors.map(a => { return { value: a.id, label: a.name } })}
-          />
-        </div>
-        <div>
-          born
+      {loggedIn && <>
+        <h2>Set birthyear</h2>
+        <form onSubmit={submit}>
+          <div style={{ width: "200px", padding: "0px 0px 5px 0px" }}>
+            <Select
+              value={author}
+              onChange={selectedOption => setAuthor(selectedOption)}
+              options={authors.data.allAuthors.map(a => { return { value: a.id, label: a.name } })}
+            />
+          </div>
+          <div>
+            born
           <input
-            type='number'
-            value={born}
-            onChange={({ target }) => setBorn(target.value)}
-          />
-        </div>
-        <button type="submit">update author</button>
-      </form>
+              type='number'
+              value={born}
+              onChange={({ target }) => setBorn(target.value)}
+            />
+          </div>
+          <button type="submit">update author</button>
+        </form>
+      </>}
     </div>
   )
 }
