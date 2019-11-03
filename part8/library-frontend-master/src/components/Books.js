@@ -3,7 +3,7 @@ import { useApolloClient } from '@apollo/react-hooks'
 
 const Books = (props) => {
   const [selectedGenre, setGenre] = useState('')
-  const [filteredBooks, setFilteredBooks] = useState(null)
+  const [filteredBooks, setFilteredBooks] = useState([])
   const client = useApolloClient()
 
   useEffect(() => {
@@ -37,12 +37,15 @@ const Books = (props) => {
     <div>
       <h2>books</h2>
 
-      <div style={{ maxWidth: '500px' }}>
-        <button key={`${-1}-all`} onClick={() => setGenre('')} style={{ margin: '0 5px 5px 0', border: selectedGenre === '' && '2px solid #4CAF50' }}>all</button>
-        {getGenres(props.books.data.allBooks).map((genre, i) => (
-          <button key={`${i}-${genre}`} onClick={() => setGenre(genre)} style={{ margin: '0 5px 5px 0', border: selectedGenre === genre && '2px solid #4CAF50' }}>{genre}</button>
-        ))}
-      </div>
+      {
+        props.books.data && props.books.data.allBooks &&
+        < div style={{ maxWidth: '500px' }}>
+          <button key={`${-1}-all`} onClick={() => setGenre('')} style={{ margin: '0 5px 5px 0', border: selectedGenre === '' && '2px solid #4CAF50' }}>all</button>
+          {getGenres(props.books.data.allBooks).map((genre, i) => (
+            <button key={`${i}-${genre}`} onClick={() => setGenre(genre)} style={{ margin: '0 5px 5px 0', border: selectedGenre === genre && '2px solid #4CAF50' }}>{genre}</button>
+          ))}
+        </div>
+      }
 
       <table>
         <tbody>
@@ -64,7 +67,7 @@ const Books = (props) => {
           )}
         </tbody>
       </table>
-    </div>
+    </div >
   )
 }
 

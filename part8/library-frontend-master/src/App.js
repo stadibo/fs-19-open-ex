@@ -8,7 +8,22 @@ import LoginForm from './components/LoginForm'
 import { useLoginStateValue } from './store'
 
 import { gql } from 'apollo-boost'
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
+import { useQuery, useMutation, useApolloClient, useSubscription } from '@apollo/react-hooks'
+
+const BOOK_DETAILS = gql`
+fragment BookDetails on Book {
+  id
+  title
+  published
+  genres
+  author {
+    id
+    name
+    born
+    bookCount
+  }
+}
+`
 
 const ALL_AUTHORS = gql`
 {
@@ -24,16 +39,10 @@ const ALL_AUTHORS = gql`
 const ALL_BOOKS = gql`
 query allBooks($genre: String) {
   allBooks(genre: $genre) {
-    id
-    title
-    author {
-      id
-      name
-    }
-    published
-    genres
+    ...BookDetails
   }
 }
+${BOOK_DETAILS}
 `
 
 const ADD_BOOK = gql`
@@ -44,17 +53,10 @@ mutation addBook($title: String!, $published: Int!, $author: String!, $genres: [
     author: $author,
     genres: $genres
   ) {
-    id
-    title
-    published
-    author {
-      id
-      name
-      born
-      bookCount
-    }
+    ...BookDetails
   }
 }
+${BOOK_DETAILS}
 `
 
 const EDIT_AUTHOR = gql`
@@ -88,6 +90,16 @@ const ME = gql`
 }
 `
 
+const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  
+${BOOK_DETAILS}
+`
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const [{ loggedIn }, dispatch] = useLoginStateValue()
@@ -111,6 +123,12 @@ const App = () => {
   })
 
   const [login] = useMutation(LOGIN)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert('New book added!')
+    }
+  })
 
   const logout = () => {
     dispatch({ type: 'logout' })
