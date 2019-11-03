@@ -18,7 +18,10 @@ const resolvers = {
       if (args.genre) conditions.genres = args.genre
       return Book.find(conditions).populate('author')
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: () => {
+      console.log('Get authors')
+      return Author.find({})
+    },
     me: (root, args, context) => {
       return context.currentUser
     }
@@ -93,7 +96,10 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: (root) => Book.countDocuments({ author: root })
+    bookCount: (root) => {
+      console.log('Get book count', root.id)
+      return Book.countDocuments({ author: root })
+    }
   }
 }
 

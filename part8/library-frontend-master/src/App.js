@@ -100,20 +100,50 @@ const BOOK_ADDED = gql`
 ${BOOK_DETAILS}
 `
 
+const includedIn = (set, object) =>
+  set.map(p => p.id).includes(object.id)
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const [{ loggedIn }, dispatch] = useLoginStateValue()
+  const [redraw, setRedraw] = useState(0)
 
   const client = useApolloClient()
+
+  const updateCacheWith = (addedBook) => {
+    // Update books
+    let dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      dataInStore.allBooks.push(addedBook)
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: dataInStore
+      })
+    }
+    // Update authors
+    dataInStore = client.readQuery({ query: ALL_AUTHORS })
+    const author = addedBook.author
+    if (!includedIn(dataInStore.allAuthors, author)) {
+      dataInStore.allAuthors.push(author)
+      client.writeQuery({
+        query: ALL_AUTHORS,
+        data: dataInStore
+      })
+    }
+    setRedraw((value) => value + 1)
+  }
 
   const authorsResult = useQuery(ALL_AUTHORS)
   const booksResult = useQuery(ALL_BOOKS)
 
   const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [
-      { query: ALL_AUTHORS },
-      { query: ALL_BOOKS }
-    ]
+    update: (store, response) => {
+      updateCacheWith(response.data.addBook)
+    }
+    // refetchQueries: [
+    //   { query: ALL_AUTHORS },
+    //   { query: ALL_BOOKS }
+    // ]
   })
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
@@ -122,11 +152,13 @@ const App = () => {
     ]
   })
 
+
   const [login] = useMutation(LOGIN)
 
   useSubscription(BOOK_ADDED, {
     onSubscriptionData: ({ subscriptionData }) => {
       window.alert('New book added!')
+      updateCacheWith(subscriptionData.data.bookAdded)
     }
   })
 
@@ -161,6 +193,7 @@ const App = () => {
       <Books
         show={page === 'books'}
         books={booksResult}
+        redraw={redraw}
         bookQuery={ALL_BOOKS}
       />
 
@@ -175,6 +208,7 @@ const App = () => {
             show={page === 'recommended'}
             books={booksResult}
             userQuery={ME}
+            redraw={redraw}
             bookQuery={ALL_BOOKS}
           />
         </>

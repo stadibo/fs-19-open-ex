@@ -20,7 +20,7 @@ const Recommended = (props) => {
         setFilteredBooks(result.data.allBooks)
       }
     })
-  }, [client, genre, props.bookQuery, userData.data, props.books.data])
+  }, [client, genre, props.bookQuery, userData.data, props.redraw])
 
   if (!props.show) {
     return null

@@ -18,7 +18,7 @@ const Books = (props) => {
         setFilteredBooks(result.data.allBooks)
       }
     })
-  }, [client, selectedGenre, props.bookQuery, props.books.data])
+  }, [client, selectedGenre, props.bookQuery, props.redraw])
 
   if (!props.show) {
     return null
