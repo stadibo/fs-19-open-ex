@@ -1,11 +1,14 @@
 import blogService from '../services/blogs'
 
-export const userReducer = (state = null, action) => {
+export const userReducer = (state = { user: null, loading: true }, action) => {
+  console.log(action.type)
   switch (action.type) {
   case 'FETCHED_USER':
-    return action.data
+    return { user: action.data, loading: false }
   case 'RESET_USER':
-    return null
+    return { user: null, loading: false }
+  case 'USER_LOADING':
+    return { ...state, loading: true }
   default:
     return state
   }
@@ -13,11 +16,14 @@ export const userReducer = (state = null, action) => {
 
 export const initUser = () =>
   async (dispatch) => {
+    dispatch({ type: 'USER_LOADING' })
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       dispatch(setFetchedUser(user))
       blogService.setToken(user.token)
+    } else {
+      dispatch({ type: 'RESET_USER' })
     }
   }
 

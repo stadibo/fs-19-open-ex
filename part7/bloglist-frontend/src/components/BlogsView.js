@@ -38,11 +38,12 @@ const BlogsView = (props) => {
   }
 
   const newBlogRef = React.createRef()
+  const padding = { padding: 5 }
 
   const byLikes = (b1, b2) => b2.likes - b1.likes
   return (
     <div>
-      <h2>blogs</h2>
+      <h2 style={{ ...padding, marginBottom: 10, marginTop: 10 }}>Blogs</h2>
 
       <Notification notification={props.notification} />
 
@@ -50,16 +51,20 @@ const BlogsView = (props) => {
         <NewBlog createBlog={createBlog} />
       </Togglable>
 
-      {props.blogs.sort(byLikes).map(blog =>
-        <Blog
-          key={blog.id}
-          blog={blog}
-          like={likeBlog}
-          remove={removeBlog}
-          user={props.user}
-          creator={blog.user.username === props.user.username}
-        />
-      )}
+      <section style={padding}>
+
+
+        {props.blogs.sort(byLikes).map(blog =>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            like={likeBlog}
+            remove={removeBlog}
+            user={props.user}
+            creator={blog.user.username === props.user.username}
+          />
+        )}
+      </section>
     </div>
   )
 }
@@ -68,7 +73,7 @@ const mapStateToProps = state => {
   return {
     blogs: state.blogs,
     notification: state.notification,
-    user: state.user
+    user: state.user.user
   }
 }
 

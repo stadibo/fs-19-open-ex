@@ -18,9 +18,11 @@ const NewBlog = (props) => {
     urlReset()
   }
 
+  const padding = { padding: '5px 5px 5px 0px' }
+
   return (
-    <div>
-      <h2>create new</h2>
+    <div style={padding}>
+      <h2 style={{ marginTop: 0, marginBottom: 10 }}>create new</h2>
 
       <form onSubmit={handleSubmit}>
         <div>

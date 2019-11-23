@@ -16,8 +16,10 @@ const Togglable = React.forwardRef(function TogglableComponent(props, ref) {
     }
   })
 
+  const padding = { padding: '5px' }
+
   return (
-    <div>
+    <div style={padding}>
       <div style={hideWhenVisible}>
         <button onClick={toggleVisibility}>
           {props.buttonLabel}
