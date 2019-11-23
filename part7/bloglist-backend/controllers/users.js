@@ -13,7 +13,7 @@ usersRouter.post('/', async (request, response, next) => {
   try {
     const { username, password, name } = request.body
 
-    if (!password || password.length<3 ) {
+    if (!password || password.length < 3) {
       return response.status(400).send({
         error: 'pasword minimum length 3'
       })
