@@ -4,7 +4,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 router.get('/', async (request, response) => {
-  const blogs = await Blog.find({})  
+  const blogs = await Blog.find({})
     .populate('user', { username: 1, name: 1 })
 
   response.json(blogs.map(b => b.toJSON()))
@@ -22,16 +22,16 @@ router.post('/', async (request, response) => {
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token missing or invalid' })
   }
-    
+
   const user = await User.findById(decodedToken.id)
 
   blog.user = user.id
 
-  if (!blog.url || !blog.title ) {
-    return response.status(400).send({ error: 'title or url missing'}).end()
+  if (!blog.url || !blog.title) {
+    return response.status(400).send({ error: 'title or url missing' }).end()
   }
 
-  if ( !blog.likes ) {
+  if (!blog.likes) {
     blog.likes = 0
   }
 
@@ -43,7 +43,7 @@ router.post('/', async (request, response) => {
 })
 
 router.put('/:id', async (request, response) => {
-  const { author, title, url,likes } = request.body
+  const { author, title, url, likes } = request.body
 
   const blog = {
     author, title, url, likes,
@@ -51,7 +51,7 @@ router.put('/:id', async (request, response) => {
 
   const updatedNote = await Blog
     .findByIdAndUpdate(request.params.id, blog, { new: true })
-      
+
   response.json(updatedNote.toJSON())
 })
 
