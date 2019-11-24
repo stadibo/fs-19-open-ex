@@ -35,7 +35,9 @@ router.post('/', async (request, response) => {
     blog.likes = 0
   }
 
-  const result = await blog.save()
+  await blog.save()
+  const result = await blog.populate('user', { username: 1, name: 1 }).execPopulate()
+
   user.blogs = user.blogs.concat(blog)
   await user.save()
 
@@ -51,6 +53,7 @@ router.put('/:id', async (request, response) => {
 
   const updatedNote = await Blog
     .findByIdAndUpdate(request.params.id, blog, { new: true })
+    .populate('user', { username: 1, name: 1 })
 
   response.json(updatedNote.toJSON())
 })

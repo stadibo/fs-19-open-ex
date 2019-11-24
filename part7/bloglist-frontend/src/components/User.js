@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const User = (props) => {
   if (!props.user)
@@ -16,7 +17,11 @@ const User = (props) => {
       <h3 style={title}>Created blogs</h3>
       <ul>
         {props.user.blogs.map(blog =>
-          <li key={blog.id}>{blog.title}</li>
+          <li key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title}
+            </Link>
+          </li>
         )}
       </ul>
     </>

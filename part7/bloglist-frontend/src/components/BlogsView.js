@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Blog from './Blog'
+import BlogListItem from './BlogListItem'
 import blogService from '../services/blogs'
 import NewBlog from './NewBlog'
 import Togglable from './Togglable'
 import Notification from './Notification'
-import { createBlog, updateBlog, deleteBlog } from '../reducers/blogReducer'
+import { createBlog } from '../reducers/blogReducer'
 import { setMessage, clearMessage } from '../reducers/notificationReducer'
 
 const BlogsView = (props) => {
@@ -19,22 +19,6 @@ const BlogsView = (props) => {
     newBlogRef.current.toggleVisibility()
     props.createBlog(createdBlog)
     notify(`a new blog ${createdBlog.title} by ${createdBlog.author} added`)
-  }
-
-  const likeBlog = async (blog) => {
-    const likedBlog = { ...blog, likes: blog.likes + 1 }
-    const updatedBlog = await blogService.update(likedBlog)
-    props.updateBlog(updatedBlog)
-    notify(`blog ${updatedBlog.title} by ${updatedBlog.author} liked!`)
-  }
-
-  const removeBlog = async (blog) => {
-    const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
-    if (ok) {
-      const updatedBlog = await blogService.remove(blog)
-      props.deleteBlog(updatedBlog)
-      notify(`blog ${updatedBlog.title} by ${updatedBlog.author} removed!`)
-    }
   }
 
   const newBlogRef = React.createRef()
@@ -52,16 +36,10 @@ const BlogsView = (props) => {
       </Togglable>
 
       <section style={padding}>
-
-
         {props.blogs.sort(byLikes).map(blog =>
-          <Blog
+          <BlogListItem
             key={blog.id}
             blog={blog}
-            like={likeBlog}
-            remove={removeBlog}
-            user={props.user}
-            creator={blog.user.username === props.user.username}
           />
         )}
       </section>
@@ -79,8 +57,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   createBlog,
-  updateBlog,
-  deleteBlog,
   setMessage,
   clearMessage,
 }

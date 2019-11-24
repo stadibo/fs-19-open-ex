@@ -4,6 +4,7 @@ import LoginView from './components/LoginView'
 import BlogsView from './components/BlogsView'
 import UsersView from './components/UsersView'
 import User from './components/User'
+import Blog from './components/Blog'
 import { connect } from 'react-redux'
 import { setMessage, clearMessage } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
@@ -11,15 +12,17 @@ import { initializeUsers } from './reducers/usersReducer'
 import { setFetchedUser, resetUser, initUser } from './reducers/userReducer'
 
 import { BrowserRouter, Route, Link, Redirect, Switch } from 'react-router-dom'
-import Blog from './components/Blog'
 
 const App = ({ initializeBlogs, initUser, initializeUsers, ...props }) => {
 
   useEffect(() => {
-    initializeBlogs()
-    initializeUsers()
-    initUser()
-  }, [initializeBlogs, initializeUsers, initUser])
+    if (props.user) {
+      initializeBlogs()
+      initializeUsers()
+    } else {
+      initUser()
+    }
+  }, [initializeBlogs, initializeUsers, initUser, props.user])
 
   const handleLogout = () => {
     props.resetUser()
@@ -38,15 +41,13 @@ const App = ({ initializeBlogs, initUser, initializeUsers, ...props }) => {
     <div>
       <BrowserRouter>
         <>
-          <div>
-            <Link style={padding} to="/blogs">blogs</Link>
-            <Link style={padding} to="/users">users</Link>
-            {props.user &&
-              <>
-                <span style={{ ...navMargin, ...padding }}>{props.user.name} logged in</span>
-                <button onClick={handleLogout}>logout</button>
-              </>}
-          </div>
+          {props.user &&
+            <>
+              <Link style={padding} to="/blogs">blogs</Link>
+              <Link style={padding} to="/users">users</Link>
+              <span style={{ ...navMargin, ...padding }}>{props.user.name} logged in</span>
+              <button onClick={handleLogout}>logout</button>
+            </>}
           <Switch>
             <Route exact path='/login' render={() => !props.user
               ? <LoginView />
@@ -61,7 +62,7 @@ const App = ({ initializeBlogs, initUser, initializeUsers, ...props }) => {
               <User userId={match.params.id} />
             } />
             <Route exact path='/blogs/:id' render={({ match }) =>
-              false && <Blog blogId={match.params.id} />
+              <Blog blogId={match.params.id} />
             } />
             <Route path='/' render={() => <Redirect to='/blogs' />} />
           </Switch>
