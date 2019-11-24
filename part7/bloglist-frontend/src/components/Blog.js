@@ -3,10 +3,12 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import blogService from '../services/blogs'
 import Notification from './Notification'
+import { useField } from '../hooks'
 import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { setMessage, clearMessage } from '../reducers/notificationReducer'
 
 const Blog = ({ blog, ...props }) => {
+  const [comment, resetComment] = useField('text')
 
   const notify = (message, type = 'success') => {
     props.setMessage({ message, type })
@@ -27,10 +29,31 @@ const Blog = ({ blog, ...props }) => {
       props.deleteBlog(blog)
       notify(`blog ${blog.title} by ${blog.author} removed!`)
       props.history.push('/blogs')
+
+    }
+  }
+
+  const handleAddComment = async (event) => {
+    event.preventDefault()
+    if (!comment.value.trim()) {
+      alert('Comment cannot be empty!')
+      return
+    }
+    try {
+      const updatedBlog = await blogService.createComment(blog.id, comment.value)
+      props.updateBlog(updatedBlog)
+      notify(`added comment ${comment.value}!`)
+      resetComment()
+    } catch (e) {
+      notify('failed to create comment', 'error')
     }
   }
 
   if (!blog) return null
+
+  const padding = { padding: 5 }
+  const title = { ...padding, marginBottom: 10, marginTop: 10 }
+  const noDecoration = { textDecoration: 'none' }
 
   const isCreator = props.user.username === blog.user.username
   return (
@@ -47,6 +70,19 @@ const Blog = ({ blog, ...props }) => {
         <div>added by {blog.user.name}</div>
         {isCreator && (<button onClick={() => removeBlog(blog)}>remove </button>)}
       </div>
+
+      <h2 style={title}>Comments</h2>
+      <form onSubmit={handleAddComment}>
+        <input {...comment} />
+        <button type="submit">add comment</button>
+      </form>
+      <ul>
+        {blog.comments.map((comment, index) =>
+          <li style={noDecoration} key={comment + '-' + index}>
+            {comment}
+          </li>
+        )}
+      </ul>
     </>
   )
 }

@@ -8,6 +8,14 @@ const NewBlog = (props) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    if (!title.value) {
+      alert('Blog needs a title')
+      return
+    }
+    if (!url.value) {
+      alert('Blog needs a url')
+      return
+    }
     props.createBlog({
       title: title.value,
       author: author.value,
