@@ -3,23 +3,23 @@ import blogService from './services/blogs'
 import LoginView from './components/LoginView'
 import BlogsView from './components/BlogsView'
 import UsersView from './components/UsersView'
+import User from './components/User'
 import { connect } from 'react-redux'
 import { setMessage, clearMessage } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/usersReducer'
 import { setFetchedUser, resetUser, initUser } from './reducers/userReducer'
 
 import { BrowserRouter, Route, Link, Redirect, Switch } from 'react-router-dom'
 import Blog from './components/Blog'
 
-const App = ({ initializeBlogs, initUser, blogs, ...props }) => {
+const App = ({ initializeBlogs, initUser, initializeUsers, ...props }) => {
 
   useEffect(() => {
     initializeBlogs()
-  }, [initializeBlogs])
-
-  useEffect(() => {
+    initializeUsers()
     initUser()
-  }, [initUser])
+  }, [initializeBlogs, initializeUsers, initUser])
 
   const handleLogout = () => {
     props.resetUser()
@@ -39,7 +39,7 @@ const App = ({ initializeBlogs, initUser, blogs, ...props }) => {
       <BrowserRouter>
         <>
           <div>
-            <Link style={padding} to="/blogs">notes</Link>
+            <Link style={padding} to="/blogs">blogs</Link>
             <Link style={padding} to="/users">users</Link>
             {props.user &&
               <>
@@ -56,10 +56,13 @@ const App = ({ initializeBlogs, initUser, blogs, ...props }) => {
               ? <BlogsView />
               : <Redirect to="/login" />
             } />
-            <Route exact path='/users/:id' render={({ match }) =>
-              <Blog blogId={match.params.id} />
-            } />
             <Route exact path='/users' render={() => <UsersView />} />
+            <Route exact path='/users/:id' render={({ match }) =>
+              <User userId={match.params.id} />
+            } />
+            <Route exact path='/blogs/:id' render={({ match }) =>
+              false && <Blog blogId={match.params.id} />
+            } />
             <Route path='/' render={() => <Redirect to='/blogs' />} />
           </Switch>
         </>
@@ -70,7 +73,6 @@ const App = ({ initializeBlogs, initUser, blogs, ...props }) => {
 
 const mapStateToProps = state => {
   return {
-    blogs: state.blogs,
     notification: state.notification,
     user: state.user.user,
     loadingUser: state.user.loading
@@ -79,6 +81,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   initializeBlogs,
+  initializeUsers,
   setMessage,
   clearMessage,
   setFetchedUser,

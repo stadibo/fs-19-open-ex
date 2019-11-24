@@ -1,7 +1,6 @@
 import blogService from '../services/blogs'
 
 export const userReducer = (state = { user: null, loading: true }, action) => {
-  console.log(action.type)
   switch (action.type) {
   case 'FETCHED_USER':
     return { user: action.data, loading: false }
