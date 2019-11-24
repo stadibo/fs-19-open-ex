@@ -8,6 +8,7 @@ import { blogReducer } from './reducers/blogReducer'
 import { notificationReducer } from './reducers/notificationReducer'
 import { userReducer } from './reducers/userReducer'
 import { usersReducer } from './reducers/usersReducer'
+import './css/main.css'
 
 const reducer = combineReducers({
   notification: notificationReducer,

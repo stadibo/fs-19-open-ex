@@ -2,12 +2,33 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import styled from 'styled-components'
+
+const baseFont = 'font-family: Open Sans, sans-serif;'
+const colorNavy = '#034f84'
+
+const Container = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 90%;
+  flex-basis: 100%;
+`
+
+const Title = styled.h1`
+  font-size: 2.5em;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  color: ${colorNavy};
+  ${baseFont}
+`
+
 const UsersView = (props) => {
   const padding = { padding: 5 }
 
   return (
-    <>
-      <h2 style={{ ...padding, marginBottom: 10, marginTop: 10 }}>Users</h2>
+    <Container>
+      <Title>Users</Title>
 
       <table style={padding}>
         <thead>
@@ -31,7 +52,7 @@ const UsersView = (props) => {
           )}
         </tbody>
       </table>
-    </>
+    </Container>
   )
 }
 

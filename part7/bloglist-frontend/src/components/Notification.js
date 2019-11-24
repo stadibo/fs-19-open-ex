@@ -1,24 +1,33 @@
-import React from 'react' 
+import React from 'react'
+
+import styled from 'styled-components'
+
+const colorSuccess = '#b1cbbb'
+const colorError = '#eea29a'
+
+const Message = styled.div`
+  color: black;
+  background-color: ${props => props.type === 'error' ? colorError : colorSuccess};
+  font-size: 20px;
+  padding: 14px;
+  margin: 8px;
+  width: 50%;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  border-radius: 3px;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+`
 
 const Notification = ({ notification }) => {
   if (notification.message === null) {
     return null
   }
 
-  const style = {
-    color: notification.type === 'error' ? 'red' : 'green',
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  }
-
   return (
-    <div style={style}>
+    <Message>
       {notification.message}
-    </div>
+    </Message>
   )
 }
 

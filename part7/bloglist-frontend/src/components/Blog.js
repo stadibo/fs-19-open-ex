@@ -7,6 +7,141 @@ import { useField } from '../hooks'
 import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { setMessage, clearMessage } from '../reducers/notificationReducer'
 
+import styled from 'styled-components'
+
+const baseFont = 'font-family: Open Sans, sans-serif;'
+const colorNavy = '#034f84'
+
+const BlogContainer = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  height: 90%;
+  flex-basis: 100%;
+`
+
+const Text = styled.span`
+  ${baseFont}
+  color: ${colorNavy};
+  font-size: 18px;
+  padding: 4px;
+  margin-right: 4px;
+`
+
+const Button = styled.button`
+  background: ${props => props.primary ? colorNavy : 'white'};
+  color: ${props => props.primary ? 'white' : colorNavy};
+
+  ${baseFont}
+  font-size: 16px;
+  margin: 12px;
+  padding: 4px 12px;
+  border: 2px solid;
+  border-color: ${colorNavy};
+  border-radius: 3px;
+
+  align-self: flex-start;
+  &:focus {
+    outline: none;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+  }
+  &:hover {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.12);
+  }
+`
+
+const RemoveButton = styled(Button)`
+  background: ${props => props.primary ? '#c94c4c' : 'white'};
+  color: ${props => props.primary ? 'white' : '#c94c4c'};
+  border-color: #c94c4c;
+`
+
+const FormButton = styled(Button)`
+  margin-left: 0;
+`
+
+const Row = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 8px;
+`
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+`
+
+const Title = styled.h2`
+  font-size: 2em;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  color: ${colorNavy};
+  ${baseFont}
+`
+
+const Header = styled.div`
+  display: flex;
+  width: 50%;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+`
+
+const Details = styled.section`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 10px;
+  padding: 18px;
+  border-radius: 3px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+`
+
+const FormInput = styled.input`
+  ${baseFont}
+  flex-basis: 100%;
+  font-size: 18px;
+  padding: 6px;
+  border-bottom-style: solid;
+  border-width: 0px 0px 0.1em 0px;
+  border-bottom-color: grey;
+
+  &:focus {
+    outline: none;
+    border-bottom-color: ${colorNavy};
+  }
+`
+
+const ListContainer = styled.ul`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  margin: 10px;
+  padding: 18px;
+  border-radius: 3px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+`
+
+const StyledComment = styled.li`
+  ${baseFont}
+  list-style-type: none;
+  font-size: 18px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding: 12px;
+  border-left: 1px solid ${colorNavy};
+`
+
 const Blog = ({ blog, ...props }) => {
   const [comment, resetComment] = useField('text')
 
@@ -51,39 +186,48 @@ const Blog = ({ blog, ...props }) => {
 
   if (!blog) return null
 
-  const padding = { padding: 5 }
-  const title = { ...padding, marginBottom: 10, marginTop: 10 }
-  const noDecoration = { textDecoration: 'none' }
-
   const isCreator = props.user.username === blog.user.username
   return (
-    <>
-      <h1>{blog.title} - {blog.author}</h1>
+    <BlogContainer>
+      <Header>
+        <Title>
+          {blog.title} - {blog.author}
+        </Title>
+      </Header>
 
       <Notification notification={props.notification} />
 
-      <div className='details'>
-        <a href={blog.url}>{blog.url}</a>
-        <div>{blog.likes} likes
-          <button onClick={() => likeBlog(blog)}>like</button>
-        </div>
-        <div>added by {blog.user.name}</div>
-        {isCreator && (<button onClick={() => removeBlog(blog)}>remove </button>)}
-      </div>
+      <Details>
+        <Row>
+          <Text> URL: <a href={blog.url}>{blog.url}</a></Text>
+        </Row>
+        <Row>
+          <Text>{blog.likes} likes</Text>
+        </Row>
+        <Row>
+          <Text>Added by {blog.user.name}</Text>
+        </Row>
+        <span>
+          <Button onClick={() => likeBlog(blog)}>Like</Button>
+          {isCreator && (<RemoveButton onClick={() => removeBlog(blog)}>Remove </RemoveButton>)}
+        </span>
+      </Details>
 
-      <h2 style={title}>Comments</h2>
-      <form onSubmit={handleAddComment}>
-        <input {...comment} />
-        <button type="submit">add comment</button>
-      </form>
-      <ul>
+      <Header>
+        <Title>Comments</Title>
+      </Header>
+      <Form onSubmit={handleAddComment}>
+        <FormInput {...comment} />
+        <FormButton type="submit">Add comment</FormButton>
+      </Form>
+      <ListContainer>
         {blog.comments.map((comment, index) =>
-          <li style={noDecoration} key={comment + '-' + index}>
+          <StyledComment key={comment + '-' + index}>
             {comment}
-          </li>
+          </StyledComment>
         )}
-      </ul>
-    </>
+      </ListContainer>
+    </BlogContainer>
   )
 }
 
