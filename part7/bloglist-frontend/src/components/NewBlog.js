@@ -122,28 +122,28 @@ const NewBlog = (props) => {
   return (
     <NewBlogContainer>
       <FormHeader>
-        <FormTitle>Create new</FormTitle>
+        <FormTitle>New blog</FormTitle>
       </FormHeader>
       <Form onSubmit={handleSubmit}>
         <FormRow>
           <FormLabel>
             Title
           </FormLabel>
-          <FormInput {...title} />
+          <FormInput id='blog-title-input' {...title} />
         </FormRow>
         <FormRow>
           <FormLabel>
             Author
           </FormLabel>
-          <FormInput {...author} />
+          <FormInput id='blog-author-input' {...author} />
         </FormRow>
         <FormRow>
           <FormLabel>
             URL
           </FormLabel>
-          <FormInput {...url} />
+          <FormInput id='blog-url-input' {...url} />
         </FormRow>
-        <Button type='submit'>create</Button>
+        <Button type='submit'>Create</Button>
       </Form>
     </NewBlogContainer>
   )
