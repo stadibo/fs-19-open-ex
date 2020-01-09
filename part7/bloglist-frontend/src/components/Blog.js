@@ -186,7 +186,7 @@ const Blog = ({ blog, ...props }) => {
 
   if (!blog) return null
 
-  const isCreator = props.user.username === blog.user.username
+  const isCreator = props.user && blog.user && props.user.username === blog.user.username
   return (
     <BlogContainer>
       <Header>
@@ -204,9 +204,12 @@ const Blog = ({ blog, ...props }) => {
         <Row>
           <Text>{blog.likes} likes</Text>
         </Row>
-        <Row>
-          <Text>Added by {blog.user.name}</Text>
-        </Row>
+        {
+          blog.user && 
+          <Row>
+            <Text>Added by {blog.user.name}</Text>
+          </Row>
+        }
         <span>
           <Button onClick={() => likeBlog(blog)}>Like</Button>
           {isCreator && (<RemoveButton onClick={() => removeBlog(blog)}>Remove </RemoveButton>)}

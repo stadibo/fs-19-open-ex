@@ -22,19 +22,22 @@ const NavButton = styled(Link)`
   background: ${props => props.primary ? colorNavy : 'white'};
   color: ${props => props.primary ? 'white' : colorNavy};
 
+  text-decoration: none;
+  text-align: center;
   ${baseFont}
-  font-size: 16px;
+  font-size: 28px;
   flex-basis: 30%;
   padding: 4px 12px;
-  border: 1px solid;
-  border-color: ${colorNavy};
+  border: none;
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    background: ${props => props.primary  ? 'white' : colorNavy};
+    color: ${props => props.primary ? colorNavy : 'white'};
   }
   &:hover {
-    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    background: ${props => props.primary  ? 'white' : colorNavy};
+    color: ${props => props.primary ? colorNavy : 'white'};
   }
 `
 
@@ -44,7 +47,7 @@ const Text = styled.span`
   font-size: 16px;
   
   text-align: right;
-  align-self: flex-end;
+  align-self: center;
   flex-basis: 25%;
   padding: 4px 12px;
 `
@@ -57,15 +60,14 @@ const LogoutButton = styled.button`
   font-size: 16px;
   flex-basis: 15%;
   padding: 4px 12px;
-  border: 1px solid;
-  border-color: #deeaee;
+  border: none;
 
   &:focus {
     outline: none;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    background: #f6f6f6;
   }
   &:hover {
-    box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+    background: #f6f6f6;
   }
 `
 
@@ -100,8 +102,8 @@ const App = ({ initializeBlogs, initUser, initializeUsers, ...props }) => {
       <>
         {props.user &&
           <NavBar>
-            <NavButton primary to="/blogs">blogs</NavButton>
-            <NavButton primary to="/users">users</NavButton>
+            <NavButton primary to="/blogs">BLOGS</NavButton>
+            <NavButton primary to="/users">USERS</NavButton>
             <Text primary>{props.user.name} logged in</Text>
             <LogoutButton primary onClick={handleLogout}>LOGOUT</LogoutButton>
           </NavBar>}

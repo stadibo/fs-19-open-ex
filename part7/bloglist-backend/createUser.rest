@@ -2,10 +2,7 @@ POST localhost:3003/api/users
 Content-Type: application/json
 
 {
-  "username":"stadibo",
-  "test":"test",
+  "username":"tester",
+  "password":"tester",
   "name":"Jesper"
 }
-
-
-{"blogs":[],"username":"stadibo","name":"Jesper","id":"5dd5af1d1ac062adf7ded8a5"}%

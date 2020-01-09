@@ -4,14 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "watch": "nodemon index.js",
-    "test": "jest . --verbose",
-    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
+    "start": "cross-env NODE_ENV=production node index.js",
+    "watch": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env NODE_ENV=test jest . --verbose --runInBand",
+    "test:debug": "node --inspect-brk node_modules/.bin/jest --runInBand",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "jest": "^25.0.0",
     "nodemon": "^1.18.9",
     "supertest": "^3.4.1"

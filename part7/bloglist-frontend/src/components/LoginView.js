@@ -126,17 +126,17 @@ const LoginView = (props) => {
       <Form onSubmit={handleLogin}>
         <FormRow>
           <FormLabel>
-            Käyttäjätunnus
+            Username
           </FormLabel>
-          <FormInput {...username} />
+          <FormInput id='username' {...username} />
         </FormRow>
         <FormRow>
           <FormLabel>
-            Salasana
+            Password
           </FormLabel>
-          <FormInput {...password} />
+          <FormInput id='password' {...password} />
         </FormRow>
-        <Button primary type="submit">Kirjaudu</Button>
+        <Button primary type="submit">Login</Button>
       </Form>
     </LoginContainer>
   )
